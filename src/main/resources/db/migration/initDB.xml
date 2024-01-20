@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <changeSet author="zhukov" id="createSchemaExample">
+        <sql>
+            CREATE SCHEMA IF NOT EXISTS quizbot;
+        </sql>
+    </changeSet>
+
+    <!-- Создание таблицы quiz_questions -->
+    <changeSet id="createTableQuizQuestions" author="zhukov">
+        <createTable tableName="quiz_questions">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="question_text" type="TEXT" nullable="false"/>
+            <column name="option_a" type="TEXT" nullable="false"/>
+            <column name="option_b" type="TEXT" nullable="false"/>
+            <column name="option_c" type="TEXT" nullable="false"/>
+            <column name="option_d" type="TEXT" nullable="false"/>
+            <column name="correct_answer" type="CHAR(1)" nullable="false"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Создание таблицы quiz_rooms -->
+    <changeSet id="createTableQuizRooms" author="zhukov">
+        <createTable tableName="quiz_rooms">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="room_name" type="VARCHAR(50)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="current_question_id" type="INTEGER"/>
+            <column name="start_time" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Создание таблицы quiz_room_participants -->
+    <changeSet id="createTableQuizRoomParticipants" author="zhukov">
+        <createTable tableName="quiz_room_participants">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="room_id" type="INTEGER">
+                <constraints foreignKeyName="fk_room_id" references="quiz_rooms(id)" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT" nullable="false"/>
+            <column name="score" type="INTEGER" defaultValue="0"/>
+            <column name="answered" type="BOOLEAN" defaultValue="false"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Создание таблицы quiz_room_results -->
+    <changeSet id="createTableQuizRoomResults" author="zhukov">
+        <createTable tableName="quiz_room_results">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="room_id" type="INTEGER">
+                <constraints foreignKeyName="fk_room_id" references="quiz_rooms(id)" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT" nullable="false"/>
+            <column name="score" type="INTEGER" defaultValue="0"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
